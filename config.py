@@ -9,7 +9,7 @@ USER_AGENT = (
 
 REQUEST_TIMEOUT = 15
 REQUEST_DELAY_SECONDS = 1.0
-MAX_ITEMS_PER_SOURCE = 20
+MAX_ITEMS_PER_SOURCE = 40
 
 # Siete medios independientes.
 # tipo="rss": el feed descubre las noticias.
@@ -40,11 +40,92 @@ SOURCES = [
         "tipo": "rss",
         "url": "https://www.24-horas.mx/feed/",
     },
+    # LA JORNADA
+
     {
         "nombre": "La Jornada",
         "tipo": "rss",
-        "url": "https://www.jornada.com.mx/rss/",
+        "url": "https://www.jornada.com.mx/rss/edicion.xml?v=1",
+        "scraping": False,
     },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/opinion.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/politica.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/economia.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/mundo.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/estados.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/capital.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/sociedad.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/ciencias.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/cultura.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/gastronomia.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/espectaculos.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/deportes.xml?v=1",
+        "scraping": False,
+    },
+    {
+        "nombre": "La Jornada",
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/cartones.xml?v=1",
+        "scraping": False,
+},
     {
         "nombre": "Publimetro Mexico",
         "tipo": "listing",

@@ -47,6 +47,7 @@ def recolectar_rss(fuente, limite):
                 entrada.get("published") or entrada.get("updated")
             ),
             "categorias": categorias,
+            "usar_scraping": fuente.get("scraping",True),
         })
 
     return resultados

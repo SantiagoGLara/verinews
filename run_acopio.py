@@ -8,7 +8,21 @@ from database.mongo import crear_indices, guardar_noticia
 
 
 def construir_documento(item):
-    scraping = descargar_y_extraer(item["url"])
+    if item.get("usar_scraping", True):
+        scraping = descargar_y_extraer(item["url"])
+    else:
+        scraping = {
+            "url_final": item["url"],
+            "dominio": "",
+            "status_http": None,
+            "content_type": "application/rss+xml",
+            "titulo_scraping": "",
+            "autor": "",
+            "fecha_scraping": None,
+            "contenido": "",
+            "imagen_principal": "",
+            "error_scraping": None,
+        }
 
     titulo = item.get("titulo") or scraping.get("titulo_scraping", "")
     resumen = preparar_resumen_rss(item.get("resumen", ""))
@@ -41,7 +55,12 @@ def construir_documento(item):
             "metodo": (
                 "rss+scraping"
                 if item["fuente_tipo"] == "rss"
-                else "listing+scraping"
+                and item.get("usar_scraping", True)
+                else
+                "rss"
+                if item["fuente_tipo"] == "rss"
+                else
+                "listing+scraping"
             ),
             "status_http": scraping.get("status_http"),
             "content_type": scraping.get("content_type", ""),
