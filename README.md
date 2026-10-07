@@ -1,114 +1,120 @@
-# VeriNews - Fase 2
+# VeriNews - Fase 2 multifuente
 
-## Objetivo
+Esta versión amplía el prototipo inicial a **siete medios independientes**.
 
-Construir el corpus inicial mediante el flujo:
+## Fuentes configuradas
 
-RSS -> scraping HTML -> normalización -> análisis básico -> MongoDB -> índices.
+1. MiMorelia - RSS
+2. Aristegui Noticias - RSS
+3. López-Dóriga Digital - RSS
+4. El Financiero - RSS
+5. 24 Horas - RSS
+6. La Jornada - descubrimiento desde portada
+7. Publimetro México - descubrimiento desde sección Noticias
 
-## Requisitos
+El sistema usa RSS cuando hay un feed utilizable. En La Jornada y Publimetro se usa una página índice muy limitada para descubrir URLs de artículos y después realizar scraping del artículo.
 
-- Python 3.10 o superior.
-- MongoDB Community Server.
-- Acceso a Internet.
+## Flujo
 
-## 1. Crear entorno virtual
+`fuente -> descubrimiento -> robots.txt -> descarga -> scraping -> normalización -> análisis -> MongoDB -> índices`
+
+## Instalación
+
+```bash
+python -m venv venv
+```
 
 Windows:
 
 ```bash
-python -m venv venv
 venv\Scripts\activate
 ```
 
 Linux/macOS:
 
 ```bash
-python3 -m venv venv
 source venv/bin/activate
 ```
-
-## 2. Instalar dependencias
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-## 3. Comprobar MongoDB
+## MongoDB
 
 ```bash
 mongosh "mongodb://localhost:27017/"
 ```
 
-Para salir:
-
-```text
-exit
-```
-
-## 4. Crear índices
-
-Desde la carpeta raíz del proyecto:
+## Crear índices
 
 ```bash
 python -m database.create_indexes
 ```
 
-## 5. Ejecutar el acopio
+## Ejecutar acopio
 
 ```bash
 python run_acopio.py
 ```
 
-## 6. Ver documentos
+Con 20 entradas máximas por fuente, una ejecución puede revisar hasta aproximadamente 140 noticias, dependiendo de cuántas entradas entregue cada fuente y de las políticas de cada sitio.
+
+## Revisar documentos
 
 ```bash
 python -m scripts.ver_documentos
 ```
 
-## 7. Probar búsqueda
+## Resumen por fuente
+
+```bash
+python -m scripts.resumen_fuentes
+```
+
+## Buscar por texto
 
 ```bash
 python -m scripts.probar_busqueda
 ```
 
-## Consultas útiles en mongosh
+## Detectar duplicados exactos
+
+```bash
+python -m scripts.detectar_duplicados
+```
+
+## Consultas en mongosh
 
 ```javascript
 use verinews
 db.noticias.countDocuments()
-db.noticias.find().limit(3)
 db.noticias.getIndexes()
+db.noticias.findOne()
 ```
 
-Búsqueda textual:
+Cantidad por fuente:
 
 ```javascript
-db.noticias.find(
-  { $text: { $search: "inteligencia artificial" } },
+db.noticias.aggregate([
   {
-    titulo: 1,
-    fuente_rss: 1,
-    score: { $meta: "textScore" }
-  }
-).sort({
-  score: { $meta: "textScore" }
-})
+    $group: {
+      _id: "$fuente.nombre",
+      cantidad: { $sum: 1 }
+    }
+  },
+  { $sort: { cantidad: -1 } }
+])
 ```
 
-## Qué demuestra esta fase
+## Qué enseñar en la revisión
 
-- acopio automatizado;
-- RSS;
-- scraping;
-- normalización;
-- análisis básico;
-- almacenamiento MongoDB;
-- control de duplicados por URL;
-- índices;
-- recuperación textual con score.
-
-## Fuentes iniciales
-
-Los tres feeds iniciales son los que aparecen en la práctica RSS de la unidad.
-Más adelante conviene incorporar medios independientes.
+- Código de los recolectores.
+- Ejecución de `run_acopio.py`.
+- Varias fuentes distintas.
+- Documento de MongoDB con `acopio` y `analisis`.
+- `db.noticias.getIndexes()`.
+- Búsqueda con score.
+- Segunda ejecución sin duplicar URLs.
+- Resumen de documentos por fuente.
+- Detección de duplicados exactos por hash.
