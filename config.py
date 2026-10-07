@@ -42,12 +42,8 @@ SOURCES = [
     },
     {
         "nombre": "La Jornada",
-        "tipo": "listing",
-        "url": "https://www.jornada.com.mx/",
-        "include_regex": (
-            r"^https://www\.jornada\.com\.mx/noticia/"
-            r"\d{4}/\d{2}/\d{2}/"
-        ),
+        "tipo": "rss",
+        "url": "https://www.jornada.com.mx/rss/",
     },
     {
         "nombre": "Publimetro Mexico",

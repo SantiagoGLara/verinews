@@ -88,9 +88,6 @@ def recolectar_listing(fuente, limite):
             enlace.get_text(" ", strip=True).split()
         )
 
-        if len(titulo) < 20:
-            continue
-
         resultados.append({
             "fuente_nombre": fuente["nombre"],
             "fuente_tipo": "listing",

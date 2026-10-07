@@ -53,7 +53,7 @@ def construir_documento(item):
 
 def main():
     print("=" * 72)
-    print("VERINEWS - FASE 2 - ACOPIO MULTIFUENTE")
+    print("VERINEWS - FASE 2 - ACOPIO DE NOTICIAS")
     print("=" * 72)
 
     print("\nComprobando MongoDB y creando indices...")
@@ -85,10 +85,13 @@ def main():
         total_descubiertas += len(items)
 
         for numero, item in enumerate(items, start=1):
-            print(f"[{numero:02d}] {item['titulo'][:70]}")
 
             try:
                 documento = construir_documento(item)
+                titulo_mostrar = documento.get("titulo")
+                if not titulo_mostrar:
+                    titilo_mostrar = "(sin titulo)"
+                print(f"[{numero:02d}] " f"{titulo_mostrar[:80]}")
                 insertada = guardar_noticia(documento)
 
                 if insertada:
