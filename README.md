@@ -58,7 +58,7 @@ python -m database.create_indexes
 python run_acopio.py
 ```
 
-Con 20 entradas máximas por fuente, una ejecución puede revisar hasta aproximadamente 140 noticias, dependiendo de cuántas entradas entregue cada fuente y de las políticas de cada sitio.
+Con 40 entradas máximas por fuente.
 
 ## Revisar documentos
 
@@ -106,15 +106,3 @@ db.noticias.aggregate([
   { $sort: { cantidad: -1 } }
 ])
 ```
-
-## Qué enseñar en la revisión
-
-- Código de los recolectores.
-- Ejecución de `run_acopio.py`.
-- Varias fuentes distintas.
-- Documento de MongoDB con `acopio` y `analisis`.
-- `db.noticias.getIndexes()`.
-- Búsqueda con score.
-- Segunda ejecución sin duplicar URLs.
-- Resumen de documentos por fuente.
-- Detección de duplicados exactos por hash.
