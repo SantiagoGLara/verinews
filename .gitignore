@@ -1,0 +1,55 @@
+# Entorno virtual
+venv/
+.venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# IDEs / editores
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Datos generados localmente
+data/
+*.csv
+*.json
+
+# Cache / pruebas
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Build / paquetes
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MongoDB local si llegaras a guardar datos dentro del proyecto
+mongodb-data/
+db/
