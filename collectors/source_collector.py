@@ -47,7 +47,6 @@ def recolectar_rss(fuente, limite):
                 entrada.get("published") or entrada.get("updated")
             ),
             "categorias": categorias,
-            "usar_scraping": fuente.get("scraping",True),
         })
 
     return resultados
@@ -88,6 +87,9 @@ def recolectar_listing(fuente, limite):
         titulo = " ".join(
             enlace.get_text(" ", strip=True).split()
         )
+
+        if len(titulo) < 20:
+            continue
 
         resultados.append({
             "fuente_nombre": fuente["nombre"],

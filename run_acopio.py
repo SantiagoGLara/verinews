@@ -8,21 +8,7 @@ from database.mongo import crear_indices, guardar_noticia
 
 
 def construir_documento(item):
-    if item.get("usar_scraping", True):
-        scraping = descargar_y_extraer(item["url"])
-    else:
-        scraping = {
-            "url_final": item["url"],
-            "dominio": "",
-            "status_http": None,
-            "content_type": "application/rss+xml",
-            "titulo_scraping": "",
-            "autor": "",
-            "fecha_scraping": None,
-            "contenido": "",
-            "imagen_principal": "",
-            "error_scraping": None,
-        }
+    scraping = descargar_y_extraer(item["url"])
 
     titulo = item.get("titulo") or scraping.get("titulo_scraping", "")
     resumen = preparar_resumen_rss(item.get("resumen", ""))
@@ -55,12 +41,7 @@ def construir_documento(item):
             "metodo": (
                 "rss+scraping"
                 if item["fuente_tipo"] == "rss"
-                and item.get("usar_scraping", True)
-                else
-                "rss"
-                if item["fuente_tipo"] == "rss"
-                else
-                "listing+scraping"
+                else "listing+scraping"
             ),
             "status_http": scraping.get("status_http"),
             "content_type": scraping.get("content_type", ""),
@@ -72,7 +53,7 @@ def construir_documento(item):
 
 def main():
     print("=" * 72)
-    print("VERINEWS - FASE 2 - ACOPIO DE NOTICIAS")
+    print("VERINEWS - FASE 2 - ACOPIO MULTIFUENTE")
     print("=" * 72)
 
     print("\nComprobando MongoDB y creando indices...")
@@ -104,13 +85,10 @@ def main():
         total_descubiertas += len(items)
 
         for numero, item in enumerate(items, start=1):
+            print(f"[{numero:02d}] {item['titulo'][:70]}")
 
             try:
                 documento = construir_documento(item)
-                titulo_mostrar = documento.get("titulo")
-                if not titulo_mostrar:
-                    titilo_mostrar = "(sin titulo)"
-                print(f"[{numero:02d}] " f"{titulo_mostrar[:80]}")
                 insertada = guardar_noticia(documento)
 
                 if insertada:

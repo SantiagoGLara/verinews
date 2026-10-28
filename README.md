@@ -58,7 +58,7 @@ python -m database.create_indexes
 python run_acopio.py
 ```
 
-Con 40 entradas máximas por fuente.
+Con 20 entradas máximas por fuente, una ejecución puede revisar hasta aproximadamente 140 noticias, dependiendo de cuántas entradas entregue cada fuente y de las políticas de cada sitio.
 
 ## Revisar documentos
 
@@ -105,4 +105,33 @@ db.noticias.aggregate([
   },
   { $sort: { cantidad: -1 } }
 ])
+```
+
+## Qué enseñar en la revisión
+
+- Código de los recolectores.
+- Ejecución de `run_acopio.py`.
+- Varias fuentes distintas.
+- Documento de MongoDB con `acopio` y `analisis`.
+- `db.noticias.getIndexes()`.
+- Búsqueda con score.
+- Segunda ejecución sin duplicar URLs.
+- Resumen de documentos por fuente.
+- Detección de duplicados exactos por hash.
+
+
+## Unidad 3 — Procesamiento de Lenguaje Natural
+
+La extensión para la Unidad 3 exporta las noticias de MongoDB a JSON, CSV y SQLite; realiza preprocesamiento con NLTK; calcula frecuencias y n-gramas; genera matrices BoW/TF-IDF; e incorpora una consulta de noticias por reconocimiento y síntesis de voz.
+
+Consulte [`README_UNIDAD3.md`](README_UNIDAD3.md) para instalación, ejecución, archivos de salida y pruebas. El pipeline principal es:
+
+```bash
+python -m scripts.preparar_unidad3
+```
+
+Para probar la consulta por voz:
+
+```bash
+python -m scripts.asistente_voz
 ```
