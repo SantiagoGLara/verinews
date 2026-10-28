@@ -27,7 +27,7 @@ def reconocer_voz():
 
     reconocedor = sr.Recognizer()
     try:
-        with sr.Microphone() as microfono:
+        with sr.Microphone(device_index=10) as microfono:
             print("Ajustando el micrófono al ruido ambiental...")
             reconocedor.adjust_for_ambient_noise(microfono, duration=0.6)
             print("Hable ahora: diga qué tipo de noticia desea buscar.")
