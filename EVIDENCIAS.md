@@ -28,7 +28,7 @@ Toma capturas de estas partes:
 
 ## Evidencias de Unidad 3 — Procesamiento de Lenguaje Natural
 
-Ejecuta `python -m scripts.preparar_unidad3` y toma capturas de:
+Ejecuta `python -m scripts.preparar_unidad3`
 
 8. `data/unidad3/noticias_procesadas.csv`, mostrando tokens y texto limpio.
 9. `data/unidad3/frecuencias_palabras.csv` y `frecuencias_ngrama.csv`.
