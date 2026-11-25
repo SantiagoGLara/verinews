@@ -135,3 +135,12 @@ Para probar la consulta por voz:
 ```bash
 python -m scripts.asistente_voz
 ```
+
+## Parte 4 — Agrupamiento temático e interfaz unificada
+
+Consulte [README_UNIDAD4.md](README_UNIDAD4.md) para ejecutar la interfaz CLI, explorar agrupamientos K-means y reproducir la evaluación experimental.
+
+```bash
+python -m scripts.verinews
+python -m scripts.evaluar_unidad4
+```

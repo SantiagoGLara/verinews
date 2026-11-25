@@ -37,3 +37,11 @@ Ejecuta `python -m scripts.preparar_unidad3`
 12. `data/unidad3/vectorizacion_info.json`, `matriz_bow.npz` y `matriz_tfidf.npz`, junto con `vocabulario_tfidf.json`.
 13. `python -m scripts.asistente_voz` con una consulta hablada y respuesta oral. Si no hay micrófono disponible, prueba la búsqueda con `python -m scripts.asistente_voz --texto "noticias de seguridad en Michoacán" --solo-texto`.
 14. `data/unidad3/reporte_resultados.md`, que contiene las métricas reales de esa ejecución.
+
+## Unidad 4 / Parte 4
+
+- Ejecutar `python -m scripts.verinews` y mostrar el menú unificado.
+- Buscar un acontecimiento por texto y mostrar resultados TF-IDF con fuente, fecha y URL.
+- Explorar los grupos K-means y abrir las noticias de un grupo.
+- Ejecutar `python -m scripts.evaluar_unidad4` y mostrar `data/unidad3/evaluacion_kmeans.md` y `evaluacion_kmeans.csv`.
+- Ejecutar `python -m unittest discover -s tests -v` y mostrar las pruebas aprobadas.
