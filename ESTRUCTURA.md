@@ -22,15 +22,19 @@ scripts/ -> Herramientas CLI de consulta, inspección y procesamiento.
   scripts/preparar_unidad3.py -> Exporta, procesa, calcula estadísticas y vectoriza.
   scripts/asistente_voz.py -> Busca noticias por similitud TF-IDF y consulta de voz/texto.
   scripts/verinews.py -> Interfaz CLI unificada para búsqueda, voz, grupos y estadísticas.
+  scripts/interfaz_web.py -> Servidor HTTP local y API JSON para la GUI web; reutiliza búsqueda y K-means.
   scripts/evaluar_unidad4.py -> Evalúa K-means con Silhouette Score para distintos valores de k.
   scripts/probar_busqueda.py -> Busca noticias con el índice de texto MongoDB.
   scripts/detectar_duplicados.py -> Agrupa duplicados exactos por hash.
   scripts/resumen_fuentes.py -> Resume documentos y texto suficiente por fuente.
   scripts/ver_documentos.py -> Muestra documentos recientes de MongoDB.
   scripts/ver_fuentes.py -> Lista fuentes y métodos almacenados.
-tests/ -> Pruebas unitarias sin conexión a MongoDB ni micrófono.
+web/ -> Interfaz gráfica web local, adaptable y sin framework adicional.
+  web/index.html -> Búsqueda, grupos temáticos y fuentes/estadísticas.
+tests/ -> Pruebas unitarias e integración HTTP sin conexión a MongoDB ni micrófono.
   tests/test_unit3.py -> Prueba preprocesamiento, estadísticas y exportaciones/vectorización.
   tests/test_unit4.py -> Prueba el agrupamiento y validación de archivos de entrada.
+  tests/test_web.py -> Prueba la carga de datos y las rutas HTTP principales de la GUI.
 data/ -> Salidas del pipeline; excluidas del control de versiones.
   data/unidad3/ -> Exportaciones, estadísticas, SQLite y matrices vectoriales.
 run_acopio.py -> Entrada principal: recolecta noticias, analiza y guarda en MongoDB.
@@ -41,9 +45,11 @@ README_UNIDAD3.md -> Pipeline PLN, salidas, búsqueda por voz y uso.
 ENTREGABLE_UNIDAD3.md -> Documentación del entregable de PLN.
 EVIDENCIAS.md -> Evidencias del proyecto.
 FUENTES.md -> Fuentes de noticias documentadas.
-rutas/ -> No hay rutas HTTP; las entradas son CLI: run_acopio.py y scripts/.
+rutas/ -> La GUI se sirve en localhost con scripts/interfaz_web.py; el acopio y la CLI siguen siendo entradas independientes.
 comandos/ -> Crear entorno: python -m venv venv; activar: source venv/bin/activate (Linux/macOS).
 comandos/ -> Instalar: python -m pip install -r requirements.txt; stopwords: python -m nltk.downloader stopwords.
 comandos/ -> Audio opcional: python -m pip install -r requirements-voz.txt.
 comandos/ -> Índices: python -m database.create_indexes; recolectar: python run_acopio.py.
-comandos/ -> PLN: python -m scripts.preparar_unidad3; probar: python -m unittest discover -s tests.
+comandos/ -> PLN: python -m scripts.preparar_unidad3; CLI: python -m scripts.verinews.
+comandos/ -> GUI: python -m scripts.interfaz_web; evaluación: python -m scripts.evaluar_unidad4.
+comandos/ -> Pruebas: python -m unittest discover -s tests -v.

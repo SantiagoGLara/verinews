@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>VeriNews | Exploración periodística</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #e5e9f0;
+      --paper: #f5f7fb;
+      --card: #ffffff;
+      --navy: #101827;
+      --blue: #3157d5;
+      --blue-soft: #edf2ff;
+      --teal: #087f78;
+      --shadow: 0 12px 32px rgba(16, 24, 39, .06);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { background: var(--navy); color: white; }
+    .topbar-inner { max-width: 1180px; margin: auto; padding: 22px 28px 20px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark { width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(145deg, #5b7cff, #2443ae); display: grid; place-items: center; font-weight: 800; font-size: 19px; letter-spacing: -1px; }
+    .brand h1 { margin: 0; font-size: 20px; letter-spacing: -.5px; }
+    .brand p { margin: 3px 0 0; color: #aeb9cb; font-size: 12px; }
+    .top-meta { color: #bdc8d8; font-size: 12px; text-align: right; }
+    .nav-wrap { background: white; border-bottom: 1px solid var(--line); }
+    .nav { max-width: 1180px; margin: auto; padding: 0 28px; display: flex; gap: 8px; }
+    .nav button { border: 0; background: transparent; color: #667085; padding: 16px 15px; border-bottom: 3px solid transparent; font-weight: 650; font-size: 13px; }
+    .nav button.active { color: var(--blue); border-bottom-color: var(--blue); }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px 28px 64px; }
+    .page-head { margin-bottom: 23px; }
+    .eyebrow { color: var(--blue); font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 800; }
+    h2 { margin: 7px 0 7px; font-size: clamp(25px, 3vw, 32px); letter-spacing: -1px; }
+    .subhead { margin: 0; color: var(--muted); max-width: 720px; line-height: 1.55; font-size: 14px; }
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: 17px; box-shadow: var(--shadow); }
+    .search-panel { padding: 22px; }
+    .search-row { display: flex; gap: 10px; }
+    .search-row input { flex: 1; min-width: 0; border: 1px solid #d7deea; background: #fbfcff; border-radius: 11px; padding: 14px 15px; color: var(--ink); outline: none; }
+    .search-row input:focus { border-color: #8298f3; box-shadow: 0 0 0 3px #e8edff; }
+    .primary { border: 0; border-radius: 11px; padding: 0 20px; color: white; background: var(--blue); font-weight: 700; transition: .15s ease; }
+    .primary:hover { background: #2447bd; transform: translateY(-1px); }
+    .hint { margin: 11px 0 0; font-size: 12px; color: #8490a3; }
+    .results-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 26px 0 13px; }
+    .results-head h3 { margin: 0; font-size: 16px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .cards { display: grid; gap: 13px; }
+    .news-card { padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: white; box-shadow: 0 5px 18px rgba(16,24,39,.035); }
+    .news-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 9px; }
+    .source-pill, .score-pill, .term { display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 5px 9px; }
+    .source-pill { color: #2850c2; background: var(--blue-soft); }
+    .score-pill { color: #087f78; background: #e9f7f4; }
+    .news-card h4 { margin: 0 0 8px; font-size: 16px; line-height: 1.42; letter-spacing: -.2px; }
+    .news-card p { margin: 0; color: #596579; font-size: 13px; line-height: 1.55; }
+    .news-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 13px; padding-top: 11px; border-top: 1px solid #eff1f5; color: #8490a3; font-size: 11px; }
+    a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    a:hover { text-decoration: underline; }
+    .empty { text-align: center; color: #8490a3; padding: 38px 18px; border: 1px dashed #d6dce7; border-radius: 14px; background: rgba(255,255,255,.55); font-size: 13px; }
+    .notice { border: 1px solid #f0d9a7; background: #fff9ec; color: #815a12; border-radius: 12px; padding: 12px 14px; font-size: 12px; line-height: 1.5; margin-top: 18px; }
+    .group-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .group-card { padding: 18px; text-align: left; border: 1px solid var(--line); border-radius: 15px; background: white; box-shadow: 0 5px 18px rgba(16,24,39,.035); transition: .15s ease; color: var(--ink); }
+    .group-card:hover { border-color: #aab8f4; transform: translateY(-2px); box-shadow: var(--shadow); }
+    .group-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .group-number { font-size: 12px; font-weight: 800; color: var(--blue); background: var(--blue-soft); border-radius: 8px; padding: 6px 9px; }
+    .group-count { color: #657187; font-size: 11px; }
+    .group-card strong { display: block; font-size: 14px; margin-bottom: 11px; }
+    .terms { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; }
+    .term { color: #526074; background: #f1f3f7; font-weight: 600; }
+    .group-card-foot { border-top: 1px solid #eff1f5; margin-top: 14px; padding-top: 11px; color: #8490a3; font-size: 11px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 17px; }
+    .secondary { border: 1px solid #d9dfeb; background: white; color: #46536a; padding: 9px 13px; border-radius: 9px; font-size: 12px; font-weight: 700; }
+    .secondary:hover { border-color: #9aabe9; color: var(--blue); }
+    .detail-head { padding: 21px; margin-bottom: 14px; }
+    .detail-head h3 { margin: 0 0 7px; font-size: 19px; }
+    .detail-meta { display: flex; flex-wrap: wrap; gap: 16px; color: #7a8799; font-size: 12px; margin-top: 13px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 18px; }
+    .stat { padding: 18px; }
+    .stat-label { color: #7b8798; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+    .stat-value { margin-top: 8px; font-size: 27px; font-weight: 800; letter-spacing: -1px; }
+    .stat-caption { color: #98a2b3; font-size: 11px; margin-top: 3px; }
+    .stats-columns { display: grid; grid-template-columns: 1.1fr .9fr; gap: 15px; }
+    .section-panel { padding: 20px; }
+    .section-panel h3 { margin: 0 0 16px; font-size: 15px; }
+    .source-row { display: grid; grid-template-columns: minmax(110px, 1fr) 2fr 44px; gap: 12px; align-items: center; margin: 14px 0; font-size: 12px; }
+    .source-name { color: #4b586d; font-weight: 650; }
+    .bar { height: 8px; border-radius: 99px; background: #edf0f5; overflow: hidden; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, #5675e9, #7f96f4); border-radius: inherit; }
+    .source-number { text-align: right; color: #7d899b; font-variant-numeric: tabular-nums; }
+    .word-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #f0f2f6; font-size: 12px; }
+    .word-row:last-child { border-bottom: 0; }
+    .word-row span:first-child { color: #4b586d; }
+    .word-row span:last-child { color: #8490a3; font-variant-numeric: tabular-nums; }
+    .loading { color: #8490a3; font-size: 13px; padding: 26px 0; }
+    .error { color: #a33a36; background: #fff1f0; border: 1px solid #ffd4d1; border-radius: 11px; padding: 12px 14px; font-size: 12px; }
+    .footer { text-align: center; color: #98a2b3; font-size: 11px; padding: 26px 12px 0; }
+    [hidden] { display: none !important; }
+    @media (max-width: 850px) { .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats-columns { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .topbar-inner { padding: 18px 18px; } .top-meta { display: none; } .nav { padding: 0 12px; overflow-x: auto; } .nav button { padding: 14px 11px; white-space: nowrap; } main { padding: 25px 16px 45px; } .search-panel { padding: 15px; } .search-row { flex-direction: column; } .primary { min-height: 44px; } .group-grid { grid-template-columns: 1fr; } .stats-grid { gap: 9px; } .stat { padding: 14px; } .stat-value { font-size: 23px; } .source-row { grid-template-columns: 105px 1fr 35px; gap: 8px; } .news-foot { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">V</div>
+        <div><h1>VeriNews</h1><p>Exploración y recuperación de información periodística</p></div>
+      </div>
+      <div class="top-meta">PARTE 4 · SISTEMA DE ANÁLISIS TEXTUAL</div>
+    </div>
+  </header>
+  <div class="nav-wrap">
+    <nav class="nav" aria-label="Navegación principal">
+      <button class="active" data-view="buscar">Buscar noticias</button>
+      <button data-view="grupos">Grupos temáticos</button>
+      <button data-view="estadisticas">Fuentes y estadísticas</button>
+    </nav>
+  </div>
+  <main>
+    <section id="vista-buscar">
+      <div class="page-head">
+        <div class="eyebrow">Recuperación de información</div>
+        <h2>Investiga un acontecimiento</h2>
+        <p class="subhead">Busca noticias relacionadas en el corpus de VeriNews. Los resultados se ordenan mediante similitud textual TF-IDF; esta puntuación no representa veracidad ni confiabilidad de la publicación.</p>
+      </div>
+      <div class="panel search-panel">
+        <form id="form-busqueda" class="search-row">
+          <input id="consulta" type="search" placeholder="Ej. huracán, seguridad en Michoacán, reforma judicial…" autocomplete="off" required>
+          <button class="primary" type="submit">Buscar noticias</button>
+        </form>
+        <p class="hint">Prueba con nombres, temas o acontecimientos. Puedes abrir cada publicación en su medio original.</p>
+      </div>
+      <div class="results-head"><h3 id="titulo-resultados">Resultados de búsqueda</h3><span id="contador-resultados" class="muted"></span></div>
+      <div id="resultados" class="cards"><div class="empty">Escribe una consulta para comenzar a explorar las noticias.</div></div>
+    </section>
+
+    <section id="vista-grupos" hidden>
+      <div class="page-head">
+        <div class="eyebrow">Aprendizaje no supervisado</div>
+        <h2>Explora los grupos temáticos</h2>
+        <p class="subhead">K-means organiza las noticias según sus características TF-IDF. Los términos ayudan a interpretar cada grupo; la pertenencia a un grupo no confirma que todas las publicaciones traten exactamente el mismo acontecimiento.</p>
+      </div>
+      <div class="toolbar"><span id="resumen-grupos" class="muted">Cargando grupos…</span><button id="recalcular" class="secondary" type="button">Recalcular grupos</button></div>
+      <div id="lista-grupos" class="group-grid"><div class="loading">Preparando agrupamientos temáticos…</div></div>
+      <div id="detalle-grupo" hidden></div>
+      <div class="notice">El índice Silhouette mide la separación entre grupos. En este corpus el valor observado es bajo, por lo que los agrupamientos deben interpretarse como una ayuda exploratoria y revisarse junto con títulos, fechas, fuentes y enlaces.</div>
+    </section>
+
+    <section id="vista-estadisticas" hidden>
+      <div class="page-head">
+        <div class="eyebrow">Descripción del corpus</div>
+        <h2>Fuentes y estadísticas</h2>
+        <p class="subhead">Consulta la cobertura del corpus y la distribución de noticias por medio. Estos datos describen el conjunto recopilado, no la calidad editorial de las fuentes.</p>
+      </div>
+      <div id="tarjetas-estadisticas" class="stats-grid"><div class="loading">Cargando estadísticas…</div></div>
+      <div class="stats-columns">
+        <div class="panel section-panel"><h3>Noticias por medio</h3><div id="fuentes"></div></div>
+        <div class="panel section-panel"><h3>Términos más frecuentes</h3><div id="palabras"></div></div>
+      </div>
+    </section>
+    <div class="footer">VeriNews · Proyecto académico · Las coincidencias textuales son apoyo para investigar, no dictámenes de veracidad.</div>
+  </main>
+<script>
+  const vistas = ['buscar', 'grupos', 'estadisticas'];
+  const botonesNav = document.querySelectorAll('.nav button');
+  const estado = { grupos: null, grupoActual: null, noticiasVisibles: 12 };
+
+  function escaparHtml(valor) {
+    return String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function urlSegura(valor) {
+    try {
+      const url = new URL(String(valor));
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+    } catch (_) { return null; }
+  }
+  function fechaCorta(valor) {
+    if (!valor) return 'Fecha no disponible';
+    const d = new Date(valor);
+    return Number.isNaN(d.getTime()) ? valor : d.toLocaleString('es-MX', {dateStyle:'medium', timeStyle:'short'});
+  }
+  async function api(url, opciones={}) {
+    const respuesta = await fetch(url, opciones);
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.error || datos.aviso || 'No se pudo completar la solicitud.');
+    return datos;
+  }
+  function mostrarError(contenedor, mensaje) { contenedor.innerHTML = `<div class="error">${escaparHtml(mensaje)}</div>`; }
+
+  botonesNav.forEach(boton => boton.addEventListener('click', () => cambiarVista(boton.dataset.view)));
+  function cambiarVista(nombre) {
+    vistas.forEach(v => document.getElementById(`vista-${v}`).hidden = v !== nombre);
+    botonesNav.forEach(b => b.classList.toggle('active', b.dataset.view === nombre));
+    if (nombre === 'grupos' && !estado.grupos) cargarGrupos();
+    if (nombre === 'estadisticas') cargarEstadisticas();
+  }
+
+  document.getElementById('form-busqueda').addEventListener('submit', async evento => {
+    evento.preventDefault();
+    const consulta = document.getElementById('consulta').value.trim();
+    if (!consulta) return;
+    const contenedor = document.getElementById('resultados');
+    document.getElementById('titulo-resultados').textContent = `Resultados para “${consulta}”`;
+    document.getElementById('contador-resultados').textContent = '';
+    contenedor.innerHTML = '<div class="loading">Buscando noticias relacionadas…</div>';
+    try {
+      const datos = await api(`/api/buscar?q=${encodeURIComponent(consulta)}&limite=10`);
+      if (datos.aviso) {
+        contenedor.innerHTML = `<div class="empty">${escaparHtml(datos.aviso)}</div>`;
+        return;
+      }
+      document.getElementById('contador-resultados').textContent = `${datos.resultados.length} resultado(s)`;
+      renderNoticias(contenedor, datos.resultados, 'similitud');
+    } catch (error) { mostrarError(contenedor, error.message); }
+  });
+
+  function renderNoticias(contenedor, noticias, tipo='grupo') {
+    if (!noticias?.length) { contenedor.innerHTML = '<div class="empty">No hay noticias para mostrar.</div>'; return; }
+    contenedor.innerHTML = noticias.map(n => {
+      const similitud = tipo === 'similitud' ? Number(n.similitud || 0) : Number(n.similitud_centroide || 0);
+      const extracto = n.resumen || n.contenido || 'No hay resumen disponible.';
+      const href = urlSegura(n.url);
+      const enlace = href ? `<a href="${escaparHtml(href)}" target="_blank" rel="noopener noreferrer">Abrir publicación ↗</a>` : '<span>Enlace no disponible</span>';
+      return `<article class="news-card">
+        <div class="news-top"><span class="source-pill">${escaparHtml(n.fuente || 'Fuente desconocida')}</span>${tipo === 'similitud' ? `<span class="score-pill">Similitud ${similitud.toFixed(4)}</span>` : `<span class="score-pill">Cercanía al centroide ${similitud.toFixed(3)}</span>`}</div>
+        <h4>${escaparHtml(n.titulo || 'Sin título')}</h4><p>${escaparHtml(extracto)}</p>
+        <div class="news-foot"><span>${escaparHtml(fechaCorta(n.fecha))}</span>${enlace}</div>
+      </article>`;
+    }).join('');
+  }
+
+  async function cargarGrupos() {
+    const lista = document.getElementById('lista-grupos');
+    const detalle = document.getElementById('detalle-grupo');
+    lista.hidden = false; detalle.hidden = true;
+    lista.innerHTML = '<div class="loading">Cargando grupos temáticos…</div>';
+    try {
+      estado.grupos = await api('/api/grupos');
+      document.getElementById('resumen-grupos').textContent = `${estado.grupos.documentos} noticias · ${estado.grupos.numero_grupos} grupos · Silhouette ${Number(estado.grupos.silhouette_coseno).toFixed(4)}`;
+      renderGrupos();
+    } catch (error) { mostrarError(lista, error.message); }
+  }
+  function renderGrupos() {
+    const lista = document.getElementById('lista-grupos');
+    lista.innerHTML = estado.grupos.grupos.map(g => {
+      const terminos = (g.terminos_representativos || []).slice(0,5).map(t => `<span class="term">${escaparHtml(t.termino)}</span>`).join('');
+      const fuentes = (g.fuentes || []).slice(0,2).map(f => f.fuente).join(' · ');
+      return `<button class="group-card" type="button" data-grupo="${g.grupo}">
+        <div class="group-card-top"><span class="group-number">GRUPO ${g.grupo}</span><span class="group-count">${g.cantidad} noticias · ${Number(g.porcentaje).toFixed(1)}%</span></div>
+        <strong>Términos representativos</strong><div class="terms">${terminos || '<span class="term">Sin términos</span>'}</div>
+        <div class="group-card-foot">${escaparHtml(fuentes || 'Fuentes no disponibles')}</div>
+      </button>`;
+    }).join('');
+    lista.querySelectorAll('[data-grupo]').forEach(b => b.addEventListener('click', () => cargarDetalleGrupo(Number(b.dataset.grupo))));
+  }
+  async function cargarDetalleGrupo(numero) {
+    const lista = document.getElementById('lista-grupos');
+    const detalle = document.getElementById('detalle-grupo');
+    lista.hidden = true; detalle.hidden = false;
+    detalle.innerHTML = '<div class="loading">Cargando noticias del grupo…</div>';
+    try {
+      const g = await api(`/api/grupos/${numero}`);
+      estado.grupoActual = g; estado.noticiasVisibles = 12;
+      renderDetalleGrupo();
+    } catch (error) { mostrarError(detalle, error.message); }
+  }
+  function renderDetalleGrupo() {
+    const g = estado.grupoActual;
+    const detalle = document.getElementById('detalle-grupo');
+    const terminos = (g.terminos_representativos || []).map(t => `<span class="term">${escaparHtml(t.termino)}</span>`).join('');
+    const fuentes = (g.fuentes || []).map(f => `${escaparHtml(f.fuente)} (${f.cantidad})`).join(' · ');
+    const noticias = (g.noticias || []).slice(0, estado.noticiasVisibles);
+    detalle.innerHTML = `<div class="toolbar"><button class="secondary" id="volver-grupos">← Volver a los grupos</button><span class="muted">Grupo ${g.grupo}</span></div>
+      <div class="panel detail-head"><h3>Grupo ${g.grupo} · ${g.cantidad} noticias</h3><div class="terms">${terminos}</div><div class="detail-meta"><span>Periodo: ${escaparHtml(fechaCorta(g.fecha_inicial))} – ${escaparHtml(fechaCorta(g.fecha_final))}</span><span>Fuentes: ${fuentes || 'No disponibles'}</span></div></div>
+      <div class="results-head"><h3>Publicaciones del grupo</h3><span class="muted">Ordenadas por cercanía al centroide</span></div>
+      <div id="noticias-grupo" class="cards"></div>
+      ${estado.noticiasVisibles < (g.noticias || []).length ? '<div style="text-align:center;padding:18px"><button class="secondary" id="ver-mas">Mostrar más noticias</button></div>' : ''}`;
+    detalle.querySelector('#volver-grupos').addEventListener('click', () => { detalle.hidden = true; document.getElementById('lista-grupos').hidden = false; });
+    renderNoticias(detalle.querySelector('#noticias-grupo'), noticias, 'grupo');
+    const verMas = detalle.querySelector('#ver-mas');
+    if (verMas) verMas.addEventListener('click', () => { estado.noticiasVisibles += 12; renderDetalleGrupo(); });
+  }
+
+  document.getElementById('recalcular').addEventListener('click', async () => {
+    const boton = document.getElementById('recalcular');
+    boton.disabled = true; boton.textContent = 'Recalculando…';
+    try {
+      estado.grupos = await api('/api/grupos/recalcular', {method:'POST'});
+      document.getElementById('resumen-grupos').textContent = `${estado.grupos.documentos} noticias · ${estado.grupos.numero_grupos} grupos · Silhouette ${Number(estado.grupos.silhouette_coseno).toFixed(4)}`;
+      document.getElementById('detalle-grupo').hidden = true;
+      document.getElementById('lista-grupos').hidden = false;
+      renderGrupos();
+    } catch (error) { mostrarError(document.getElementById('lista-grupos'), error.message); }
+    finally { boton.disabled = false; boton.textContent = 'Recalcular grupos'; }
+  });
+
+  async function cargarEstadisticas() {
+    const tarjetas = document.getElementById('tarjetas-estadisticas');
+    if (tarjetas.dataset.cargadas === 'si') return;
+    try {
+      const d = await api('/api/estadisticas');
+      const diversidad = (Number(d.diversidad_lexica_corpus || 0) * 100).toFixed(1) + '%';
+      const valores = [
+        ['Noticias recopiladas', d.total_noticias, 'Documentos en el corpus'],
+        ['Noticias con texto', d.noticias_con_texto, 'Con contenido procesable'],
+        ['Tokens limpios', Number(d.tokens_limpios_total).toLocaleString('es-MX'), 'Después del preprocesamiento'],
+        ['Diversidad léxica', diversidad, 'Vocabulario / tokens'],
+      ];
+      tarjetas.innerHTML = valores.map(v => `<div class="panel stat"><div class="stat-label">${v[0]}</div><div class="stat-value">${v[1]}</div><div class="stat-caption">${v[2]}</div></div>`).join('');
+      const max = Math.max(...d.por_fuente.map(f => Number(f.noticias || 0)), 1);
+      document.getElementById('fuentes').innerHTML = d.por_fuente.map(f => `<div class="source-row"><span class="source-name">${escaparHtml(f.fuente)}</span><div class="bar"><span style="width:${100 * Number(f.noticias || 0) / max}%"></span></div><span class="source-number">${f.noticias}</span></div>`).join('');
+      document.getElementById('palabras').innerHTML = d.frecuencias_palabras.map(p => `<div class="word-row"><span>${escaparHtml(p.termino)}</span><span>${Number(p.frecuencia).toLocaleString('es-MX')}</span></div>`).join('');
+      tarjetas.dataset.cargadas = 'si';
+    } catch (error) { mostrarError(tarjetas, error.message); }
+  }
+</script>
+</body>
+</html>

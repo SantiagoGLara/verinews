@@ -41,7 +41,8 @@ Ejecuta `python -m scripts.preparar_unidad3`
 ## Unidad 4 / Parte 4
 
 - Ejecutar `python -m scripts.verinews` y mostrar el menú unificado.
+- Ejecutar `python -m scripts.interfaz_web`, abrir `http://127.0.0.1:8000` y mostrar los tres apartados de la GUI: búsqueda, grupos temáticos y fuentes/estadísticas.
 - Buscar un acontecimiento por texto y mostrar resultados TF-IDF con fuente, fecha y URL.
 - Explorar los grupos K-means y abrir las noticias de un grupo.
 - Ejecutar `python -m scripts.evaluar_unidad4` y mostrar `data/unidad3/evaluacion_kmeans.md` y `evaluacion_kmeans.csv`.
-- Ejecutar `python -m unittest discover -s tests -v` y mostrar las pruebas aprobadas.
+- Ejecutar `python -m unittest discover -s tests -v` y mostrar las pruebas aprobadas, incluidas las rutas HTTP de la GUI.
