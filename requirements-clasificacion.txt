@@ -1,0 +1,6 @@
+# Dependencias opcionales para clasificación temática zero-shot con mDeBERTa.
+# No son necesarias para ejecutar la búsqueda, la CLI ni la GUI principal.
+transformers>=4.45,<5
+torch>=2.2
+sentencepiece>=0.2
+accelerate>=0.30

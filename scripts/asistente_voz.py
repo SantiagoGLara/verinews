@@ -92,6 +92,18 @@ def buscar_noticias(consulta, limite=3):
             "resumen": noticia.get("resumen") or "",
             "contenido": noticia.get("contenido") or "",
             "similitud": round(puntaje, 4),
+            # Índice estable dentro del CSV/matriz TF-IDF de este corpus.
+            # Permite análisis posteriores sin volver a implementar la búsqueda.
+            "indice_corpus": int(indice),
+            "mongo_id": noticia.get("mongo_id") or "",
+            "dominio": noticia.get("fuente_dominio") or "",
+            "hash_contenido": noticia.get("hash_contenido_original") or "",
+            "palabras_acopio": int(noticia.get("numero_palabras_acopio") or 0),
+            "cobertura_textual": (
+                "Contenido extraído disponible"
+                if (noticia.get("contenido") or "").strip()
+                else "Sin cuerpo extraído; se usa titular/resumen"
+            ),
         })
 
     if not resultados:

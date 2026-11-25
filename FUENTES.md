@@ -1,22 +1,22 @@
-# Fuentes de la Fase 2
+# Fuentes y referencias técnicas
 
-## RSS
+## Fuentes periodísticas configuradas
 
-- MiMorelia
-- Aristegui Noticias
-- López-Dóriga Digital
-- El Financiero
-- 24 Horas
+- MiMorelia: https://mimorelia.com/
+- Aristegui Noticias: https://aristeguinoticias.com/
+- López-Dóriga Digital: https://lopezdoriga.com/
+- El Financiero: https://www.elfinanciero.com.mx/
+- 24 Horas: https://www.24-horas.mx/
+- La Jornada: https://www.jornada.com.mx/
+- Publimetro México: https://www.publimetro.com.mx/
 
-## Página índice + scraping
+## Herramientas y modelos
 
-- La Jornada
-- Publimetro México
+- NLTK: https://www.nltk.org/
+- scikit-learn — TF-IDF: https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction
+- scikit-learn — TruncatedSVD: https://scikit-learn.org/stable/modules/decomposition.html#truncated-singular-value-decomposition-and-latent-semantic-analysis
+- scikit-learn — K-means: https://scikit-learn.org/stable/modules/clustering.html#k-means
+- Hugging Face Transformers: https://huggingface.co/docs/transformers
+- Modelo NLI mDeBERTa de la práctica de Unidad 4: https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-mnli-xnli
 
-## Razón del diseño
-
-RSS reduce el trabajo de descubrimiento porque ya entrega entradas estructuradas con título, enlace y normalmente fecha. El scraping se usa para intentar obtener el texto completo del artículo.
-
-Las páginas índice se usan como un crawler muy limitado: solo se siguen patrones de URL de noticias, se limita la cantidad de enlaces y se consulta `robots.txt` antes de continuar.
-
-Si el scraping de un artículo falla, el sistema conserva los datos recuperados por RSS o por la página índice y registra el error dentro de `acopio.error_scraping`.
+El clasificador mDeBERTa es opcional y no se descarga durante la instalación base.

@@ -5,7 +5,7 @@ feedparser
 pymongo
 python-dateutil
 nltk>=3.8,<4.0
-scikit-learn>=1.3,<2.0
+scikit-learn==1.9.1
 scipy>=1.10
 matplotlib>=3.7
 joblib>=1.3
