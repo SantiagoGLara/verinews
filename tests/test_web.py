@@ -73,6 +73,9 @@ class PruebasHTTPInterfaz(unittest.TestCase):
         estado, datos = self._get_json("/api/estadisticas")
         self.assertEqual(estado, 200)
         self.assertGreater(datos["total_noticias"], 0)
+        self.assertGreater(datos["noticias_con_cuerpo"], 0)
+        self.assertGreater(datos["noticias_solo_resumen"], 0)
+        self.assertEqual(datos["total_noticias"], datos["noticias_con_cuerpo"] + datos["noticias_solo_resumen"] + datos["noticias_sin_texto"])
         self.assertEqual(len(datos["por_fuente"]), 7)
 
     def test_api_grupos_y_detalle(self):
@@ -89,6 +92,67 @@ class PruebasHTTPInterfaz(unittest.TestCase):
         self.assertEqual(datos["consulta"], "huracan simon")
         self.assertTrue(datos["resultados"])
         self.assertIn("similitud", datos["resultados"][0])
+
+    def test_api_investigar_construye_expediente(self):
+        estado, datos = self._get_json("/api/investigar?q=huracan%20simon%20michoacan&limite=20")
+        self.assertEqual(estado, 200)
+        self.assertEqual(datos["metodo_recuperacion"], "tfidf")
+        self.assertGreater(datos["resumen"]["publicaciones_recuperadas"], 0)
+        self.assertGreater(datos["resumen"]["medios_distintos"], 1)
+        self.assertTrue(datos["cronologia"])
+        self.assertTrue(datos["fuentes"])
+        self.assertIn("grupos_cobertura", datos)
+        self.assertIn("tipo_fuente", datos["fuentes"][0])
+        self.assertIn("indice_corpus", datos["resultados"][0])
+
+    def test_api_investigar_rechaza_metodo_invalido(self):
+        from urllib.error import HTTPError
+        import json
+        with self.assertRaises(HTTPError) as contexto:
+            from urllib.request import urlopen
+            urlopen(self.base + "/api/investigar?q=huracan&metodo=incorrecto", timeout=10)
+        self.assertEqual(contexto.exception.code, 400)
+        datos = json.loads(contexto.exception.read().decode("utf-8"))
+        self.assertIn("Método", datos["error"])
+
+    def test_api_clasificar_valida_cantidad_de_indices(self):
+        import json
+        from urllib.request import Request, urlopen
+        solicitud = Request(
+            self.base + "/api/clasificar",
+            data=json.dumps({"indices": []}).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        from urllib.error import HTTPError
+        with self.assertRaises(HTTPError) as contexto:
+            urlopen(solicitud, timeout=10)
+        self.assertEqual(contexto.exception.code, 400)
+
+    def test_api_investigar_lsa_experimental(self):
+        estado, datos = self._get_json("/api/investigar?q=huracan%20simon%20michoacan&limite=10&metodo=lsa")
+        self.assertEqual(estado, 200)
+        self.assertEqual(datos["metodo_recuperacion"], "lsa")
+        self.assertTrue(datos["resultados"])
+
+    def test_api_clasificar_informa_dependencia_opcional(self):
+        import importlib.util
+        if importlib.util.find_spec("transformers") is not None:
+            self.skipTest("Transformers está instalado; no se descarga el modelo en pruebas automáticas.")
+        import json
+        from urllib.request import Request, urlopen
+        from urllib.error import HTTPError
+        solicitud = Request(
+            self.base + "/api/clasificar",
+            data=json.dumps({"indices": [0]}).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with self.assertRaises(HTTPError) as contexto:
+            urlopen(solicitud, timeout=10)
+        self.assertEqual(contexto.exception.code, 503)
+        datos = json.loads(contexto.exception.read().decode("utf-8"))
+        self.assertIn("requirements-clasificacion", datos["error"])
 
 
 if __name__ == "__main__":

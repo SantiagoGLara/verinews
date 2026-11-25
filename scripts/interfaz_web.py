@@ -3,8 +3,8 @@
 Ejecutar desde la raíz del proyecto:
     python -m scripts.interfaz_web
 
-La interfaz se sirve únicamente en localhost. Reutiliza la recuperación TF-IDF
-existente y los agrupamientos K-means de processing.clustering.
+La interfaz se sirve únicamente en localhost. Reutiliza TF-IDF, añade un flujo
+experimental LSA y organiza expedientes con cronología y análisis de procedencia.
 """
 
 import argparse
@@ -14,7 +14,8 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
 import webbrowser
 
-from processing.clustering import cargar_agrupamientos, generar_agrupamientos
+from processing.clustering import cargar_agrupamientos, cargar_corpus, generar_agrupamientos
+from processing.investigation import construir_expediente
 from scripts.asistente_voz import buscar_noticias
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,7 +77,7 @@ def obtener_grupo(numero, resultado=None):
 class VeriNewsHandler(BaseHTTPRequestHandler):
     """Manejador HTTP para la GUI y su API JSON local."""
 
-    server_version = "VeriNewsLocal/1.0"
+    server_version = "VeriNewsLocal/2.0"
 
     def log_message(self, formato, *args):
         # Evita llenar la terminal con cada recurso estático de la interfaz.
@@ -115,6 +116,26 @@ class VeriNewsHandler(BaseHTTPRequestHandler):
 
         if path == "/api/salud":
             self._json({"ok": True, "aplicacion": "VeriNews", "version": "Parte 4"})
+            return
+
+        if path == "/api/investigar":
+            consulta = (parametros.get("q") or [""])[0].strip()
+            try:
+                limite = int((parametros.get("limite") or ["20"])[0])
+            except ValueError:
+                limite = 20
+            metodo = (parametros.get("metodo") or ["tfidf"])[0].strip().lower()
+            if not consulta:
+                self._json({"error": "Escriba una afirmación, titular o acontecimiento para investigar."}, 400)
+                return
+            if metodo not in {"tfidf", "lsa"}:
+                self._json({"error": "Método de recuperación no válido."}, 400)
+                return
+            try:
+                expediente = construir_expediente(consulta, limite=limite, metodo=metodo)
+                self._json(expediente)
+            except Exception as exc:
+                self._json({"error": str(exc)}, 500)
             return
 
         if path == "/api/buscar":
@@ -158,9 +179,20 @@ class VeriNewsHandler(BaseHTTPRequestHandler):
         if path == "/api/estadisticas":
             try:
                 datos = cargar_estadisticas()
+                registros, _, _ = cargar_corpus(DATOS)
+                con_cuerpo = sum(bool((n.get("contenido") or "").strip()) for n in registros)
+                solo_resumen = sum(
+                    not (n.get("contenido") or "").strip()
+                    and bool((n.get("resumen") or n.get("titulo") or "").strip())
+                    for n in registros
+                )
+                sin_texto = len(registros) - con_cuerpo - solo_resumen
                 self._json({
                     "total_noticias": datos.get("total_noticias", 0),
                     "noticias_con_texto": datos.get("noticias_con_texto", 0),
+                    "noticias_con_cuerpo": con_cuerpo,
+                    "noticias_solo_resumen": solo_resumen,
+                    "noticias_sin_texto": sin_texto,
                     "tokens_limpios_total": datos.get("tokens_limpios_total", 0),
                     "vocabulario_total": datos.get("vocabulario_total", 0),
                     "diversidad_lexica_corpus": datos.get("diversidad_lexica_corpus", 0),
@@ -190,6 +222,39 @@ class VeriNewsHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 self._json({"error": str(exc)}, 500)
             return
+
+        if path == "/api/clasificar":
+            try:
+                longitud = int(self.headers.get("Content-Length", "0"))
+                if longitud < 1 or longitud > 20000:
+                    self._json({"error": "Solicitud vacía o demasiado grande."}, 400)
+                    return
+                cuerpo = json.loads(self.rfile.read(longitud).decode("utf-8"))
+                indices = cuerpo.get("indices", [])
+                if not isinstance(indices, list) or not indices or len(indices) > 8:
+                    self._json({"error": "Seleccione entre 1 y 8 noticias para clasificar."}, 400)
+                    return
+                indices = [int(i) for i in indices]
+                registros, _, _ = cargar_corpus(DATOS)
+                if any(i < 0 or i >= len(registros) for i in indices):
+                    self._json({"error": "Uno o más identificadores de noticia no son válidos."}, 400)
+                    return
+                seleccion = []
+                for indice in indices:
+                    noticia = dict(registros[indice])
+                    noticia["indice_corpus"] = indice
+                    seleccion.append(noticia)
+                from processing.topic_classifier import clasificar_registros
+                resultado = clasificar_registros(seleccion)
+                self._json(resultado)
+            except RuntimeError as exc:
+                self._json({"error": str(exc)}, 503)
+            except (ValueError, TypeError, json.JSONDecodeError) as exc:
+                self._json({"error": str(exc)}, 400)
+            except Exception as exc:
+                self._json({"error": str(exc)}, 500)
+            return
+
         self._json({"error": "Ruta no encontrada."}, 404)
 
 

@@ -1,10 +1,12 @@
 """Evaluación experimental de K-means para la Parte 4 de VeriNews."""
 
 import csv
+import platform
 from pathlib import Path
 
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+import sklearn
 
 from processing.clustering import cargar_corpus, preparar_matriz_tematica
 
@@ -106,6 +108,8 @@ def evaluar(valores_k=(4, 6, 8, 10, 12, 14)):
         "# Evaluación experimental de K-means — VeriNews",
         "",
         f"- Noticias evaluadas: {len(noticias)}",
+        f"- Python utilizado: {platform.python_version()}",
+        f"- scikit-learn utilizado: {sklearn.__version__}",
         f"- Características TF-IDF originales: {matriz_original.shape[1]}",
         f"- Características utilizadas: {matriz.shape[1]}",
         f"- Términos generales excluidos del agrupamiento: {len(terminos_excluidos)}",

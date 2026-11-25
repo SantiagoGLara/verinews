@@ -1,55 +1,26 @@
-proyecto -> VeriNews: recolector de noticias y pipeline PLN; Python, MongoDB, NLTK y scikit-learn.
-./ -> Código y documentación del proyecto; datos generados en data/unidad3/.
-collectors/ -> Descubrimiento RSS/listados, control robots.txt y scraping.
-  collectors/__init__.py -> Paquete de recolectores.
-  collectors/source_collector.py -> Coordina la recolección por fuente.
-  collectors/rss_collector.py -> Lee y normaliza entradas RSS.
-  collectors/article_scraper.py -> Descarga y extrae metadatos y texto.
-  collectors/robots.py -> Comprueba permisos según robots.txt.
-config.py -> MongoDB, fuentes, límites y parámetros HTTP.
-database/ -> Acceso a MongoDB, exportación e índices.
-  database/mongo.py -> Conexión, persistencia e índices MongoDB.
-  database/create_indexes.py -> Entrada para crear índices.
-  database/exporters.py -> Exporta documentos a JSON, CSV y SQLite.
-processing/ -> Normalización, análisis y PLN.
-  processing/clustering.py -> Agrupamiento temático K-means sobre la matriz TF-IDF.
-  processing/normalizer.py -> Limpia HTML y normaliza texto/notas RSS.
-  processing/analyzer.py -> Extrae palabras clave, conteos y hash.
-  processing/preprocessor.py -> Tokeniza, filtra stopwords y aplica stemming.
-  processing/unit3_statistics.py -> Calcula frecuencias, n-gramas y métricas.
-  processing/vectorization.py -> Genera matrices BoW y TF-IDF.
-scripts/ -> Herramientas CLI de consulta, inspección y procesamiento.
-  scripts/preparar_unidad3.py -> Exporta, procesa, calcula estadísticas y vectoriza.
-  scripts/asistente_voz.py -> Busca noticias por similitud TF-IDF y consulta de voz/texto.
-  scripts/verinews.py -> Interfaz CLI unificada para búsqueda, voz, grupos y estadísticas.
-  scripts/interfaz_web.py -> Servidor HTTP local y API JSON para la GUI web; reutiliza búsqueda y K-means.
-  scripts/evaluar_unidad4.py -> Evalúa K-means con Silhouette Score para distintos valores de k.
-  scripts/probar_busqueda.py -> Busca noticias con el índice de texto MongoDB.
-  scripts/detectar_duplicados.py -> Agrupa duplicados exactos por hash.
-  scripts/resumen_fuentes.py -> Resume documentos y texto suficiente por fuente.
-  scripts/ver_documentos.py -> Muestra documentos recientes de MongoDB.
-  scripts/ver_fuentes.py -> Lista fuentes y métodos almacenados.
-web/ -> Interfaz gráfica web local, adaptable y sin framework adicional.
-  web/index.html -> Búsqueda, grupos temáticos y fuentes/estadísticas.
-tests/ -> Pruebas unitarias e integración HTTP sin conexión a MongoDB ni micrófono.
-  tests/test_unit3.py -> Prueba preprocesamiento, estadísticas y exportaciones/vectorización.
-  tests/test_unit4.py -> Prueba el agrupamiento y validación de archivos de entrada.
-  tests/test_web.py -> Prueba la carga de datos y las rutas HTTP principales de la GUI.
-data/ -> Salidas del pipeline; excluidas del control de versiones.
-  data/unidad3/ -> Exportaciones, estadísticas, SQLite y matrices vectoriales.
-run_acopio.py -> Entrada principal: recolecta noticias, analiza y guarda en MongoDB.
-requirements.txt -> Dependencias principales de recolección y PLN.
-requirements-voz.txt -> Dependencia adicional de audio para el asistente.
-README.md -> Instalación, acopio, MongoDB y comandos generales.
-README_UNIDAD3.md -> Pipeline PLN, salidas, búsqueda por voz y uso.
-ENTREGABLE_UNIDAD3.md -> Documentación del entregable de PLN.
-EVIDENCIAS.md -> Evidencias del proyecto.
-FUENTES.md -> Fuentes de noticias documentadas.
-rutas/ -> La GUI se sirve en localhost con scripts/interfaz_web.py; el acopio y la CLI siguen siendo entradas independientes.
-comandos/ -> Crear entorno: python -m venv venv; activar: source venv/bin/activate (Linux/macOS).
-comandos/ -> Instalar: python -m pip install -r requirements.txt; stopwords: python -m nltk.downloader stopwords.
-comandos/ -> Audio opcional: python -m pip install -r requirements-voz.txt.
-comandos/ -> Índices: python -m database.create_indexes; recolectar: python run_acopio.py.
-comandos/ -> PLN: python -m scripts.preparar_unidad3; CLI: python -m scripts.verinews.
-comandos/ -> GUI: python -m scripts.interfaz_web; evaluación: python -m scripts.evaluar_unidad4.
-comandos/ -> Pruebas: python -m unittest discover -s tests -v.
+# Estructura de VeriNews
+
+- `collectors/`: descubrimiento RSS/listados, robots.txt y extracción de artículos.
+- `database/`: conexión MongoDB, índices y exportaciones.
+- `processing/`: preprocesamiento, estadísticas, vectorización y análisis.
+  - `clustering.py`: K-means temático del corpus.
+  - `investigation.py`: expediente de investigación, fuentes, cronología, subgrupos de cobertura y pares similares.
+  - `lsa_retrieval.py`: recuperación latente experimental (TF-IDF + TruncatedSVD).
+  - `topic_classifier.py`: clasificación zero-shot opcional con mDeBERTa.
+- `scripts/`: puntos de entrada CLI, GUI, recolección y evaluación.
+  - `asistente_voz.py`: buscador TF-IDF y consulta de voz/texto.
+  - `verinews.py`: CLI unificada.
+  - `interfaz_web.py`: servidor HTTP local y API JSON.
+  - `evaluar_unidad4.py`: evaluación de K-means.
+  - `evaluar_recuperacion.py`: comparación TF-IDF/LSA.
+  - `evaluar_busqueda_legacy.py`: compara MongoDB `$text` de la versión anterior con TF-IDF y LSA (requiere MongoDB).
+  - `evaluar_unidad4_completa.py`: ejecuta las comparaciones principales.
+  - `preparar_pares_duplicados.py` / `evaluar_duplicados.py`: muestreo y métricas tras etiquetado humano.
+  - `preparar_muestra_clasificacion.py` / `evaluar_clasificacion.py`: muestra y evaluación del clasificador.
+- `web/index.html`: GUI de investigación, grupos y estadísticas.
+- `tests/`: pruebas de Unidad 3, K-means, expediente, clasificador simulado y API web.
+- `data/unidad3/`: corpus procesado, estadísticas y matrices TF-IDF/BoW originales.
+- `data/unidad4/`: índice LSA (se regenera por versión de scikit-learn), consultas de relevancia, resultados experimentales y plantillas de etiquetado.
+- `requirements-clasificacion.txt`: dependencias opcionales para mDeBERTa; no son necesarias para la GUI base.
+
+Los artefactos de Unidad 3 se conservan. La búsqueda predeterminada sigue siendo TF-IDF; LSA y mDeBERTa son opciones experimentales/opcionales.
